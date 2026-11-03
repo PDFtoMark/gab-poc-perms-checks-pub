@@ -1,0 +1,33 @@
+name: ConsumerPub
+on:
+  workflow_run:
+    workflows: ["Producer"]
+    types: [completed]
+permissions:
+  checks: write
+jobs:
+  checks_only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: dawidd6 download checks write only
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v7
+        with:
+          name: junit-test-results
+          workflow: ${{ github.event.workflow.id }}
+          run_id: ${{ github.event.workflow_run.id }}
+      - name: list xml
+        run: find . -name '*.xml' -print
+  actions_read:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    steps:
+      - name: dawidd6 download actions read
+        uses: dawidd6/action-download-artifact@v7
+        with:
+          name: junit-test-results
+          workflow: ${{ github.event.workflow.id }}
+          run_id: ${{ github.event.workflow_run.id }}
+      - name: list xml
+        run: find . -name '*.xml' -print

@@ -1,0 +1,16 @@
+name: Producer
+on:
+  push:
+    branches: [main]
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    steps:
+      - name: make artifact
+        run: |
+          mkdir -p out
+          printf '<testsuites><testsuite name="s" tests="1"><testcase name="t" classname="C"/></testsuite></testsuites>' > out/report.xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: junit-test-results
+          path: out/*.xml
